@@ -5,6 +5,7 @@ import RecommendationDisplay from "./RecommendationDisplay";
 
 export default function SurveyForm() {
   const [answers, setAnswers] = useState({
+    destination: "", // New destination field
     purpose: "",
     type: "",
     budget: "",
@@ -68,6 +69,19 @@ export default function SurveyForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {/* Destination Input */}
+      <div className="space-y-2">
+        <h3 className="text-lg font-semibold">0. 희망하는 여행 목적지가 있다면 알려주세요 (선택 사항):</h3>
+        <input
+          type="text"
+          name="destination"
+          value={answers.destination}
+          onChange={handleChange}
+          placeholder="예: 파리, 제주도"
+          className="border p-2 rounded w-full"
+        />
+      </div>
+
       {/* Travel Purpose */}
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">1. 여행의 목적은 무엇인가요?</h3>
@@ -92,7 +106,7 @@ export default function SurveyForm() {
       {/* Budget */}
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">3. 예산은 어느 정도로 생각하시나요? (1인 기준)</h3>
-        <select name="budget" onChange={handleChange} value={answers.budget} className="border p-2 rounded">
+        <select name="budget" onChange={handleChange} value={answers.budget} className="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 appearance-none cursor-pointer transition duration-150 ease-in-out hover:border-gray-400">
           <option value="">선택하세요</option>
           <option value="low">50만원 이하</option>
           <option value="medium">50만원 - 150만원</option>
@@ -114,7 +128,7 @@ export default function SurveyForm() {
       {/* Duration */}
       <div className="space-y-2">
         <h3 className="text-lg font-semibold">5. 여행 기간은 어느 정도를 계획하시나요?</h3>
-        <select name="duration" onChange={handleChange} value={answers.duration} className="border p-2 rounded">
+        <select name="duration" onChange={handleChange} value={answers.duration} className="block w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 appearance-none cursor-pointer transition duration-150 ease-in-out hover:border-gray-400">
           <option value="">선택하세요</option>
           <option value="short">3일 이하</option>
           <option value="medium">4일 - 7일</option>

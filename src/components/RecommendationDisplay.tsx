@@ -1,33 +1,35 @@
 interface RecommendationDisplayProps {
   recommendation: {
     destination: string;
-    itinerary: { day: number; activity: string }[];
-    notes: string;
+    description: string;
+    itinerary: { day: string; activities: string[] }[];
   };
 }
 
 export default function RecommendationDisplay({ recommendation }: RecommendationDisplayProps) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
-      <h2 className="text-3xl font-bold mb-4 text-gray-800">여행 추천 결과</h2>
+    <div className="bg-white p-6 rounded-lg shadow-xl max-w-2xl mx-auto my-8 border border-gray-200">
+      <h2 className="text-3xl font-bold mb-4 text-gray-800 border-b pb-2">✨ 여행 추천 결과 ✨</h2>
+      
       <div className="mb-6">
-        <h3 className="text-2xl font-semibold text-blue-600">목적지: {recommendation.destination}</h3>
+        <h3 className="text-2xl font-semibold text-blue-700 mb-2">🌍 목적지: {recommendation.destination}</h3>
+        <p className="text-gray-700 leading-relaxed">{recommendation.description}</p>
       </div>
 
       <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-3 text-gray-700">추천 일정:</h3>
-        <ul className="list-disc list-inside space-y-2 text-gray-600">
-          {recommendation.itinerary.map((item) => (
-            <li key={item.day}>
-              <span className="font-medium">Day {item.day}:</span> {item.activity}
-            </li>
+        <h3 className="text-xl font-semibold mb-3 text-gray-700 border-b pb-2">🗓️ 추천 일정:</h3>
+        <div className="space-y-4">
+          {recommendation.itinerary.map((item, index) => (
+            <div key={index} className="bg-gray-50 p-4 rounded-lg shadow-sm border border-gray-100">
+              <h4 className="font-bold text-lg text-gray-800 mb-2">{item.day}</h4>
+              <ul className="list-disc list-inside space-y-1 text-gray-600">
+                {item.activities.map((activity, idx) => (
+                  <li key={idx}>{activity}</li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </ul>
-      </div>
-
-      <div>
-        <h3 className="text-xl font-semibold mb-3 text-gray-700">참고:</h3>
-        <p className="text-gray-600">{recommendation.notes}</p>
+        </div>
       </div>
     </div>
   );

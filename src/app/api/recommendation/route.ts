@@ -20,7 +20,34 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    const prompt = `Based on the following travel preferences, recommend a travel destination and itinerary in JSON format. Ensure the JSON is valid and directly parsable. Do not include any markdown or extra text outside the JSON object. Travel preferences: ${JSON.stringify(surveyResults)}`;
+    const { destination, duration, ...finalSurveyResults } = surveyResults; // Extract duration here
+    const destinationPrompt = destination ? `The user has a preferred destination: ${destination}. Please prioritize this destination if it aligns with other preferences.` : '';
+
+    let durationInstruction = '';
+    if (duration === 'short') {
+      durationInstruction = 'The travel duration is 3 days or less. Please provide an itinerary for 1 to 3 days.';
+    } else if (duration === 'medium') {
+      durationInstruction = 'The travel duration is 4 to 7 days. Please provide an itinerary for 4 to 7 days.';
+    } else if (duration === 'long') {
+      durationInstruction = 'The travel duration is 8 days or more. Please provide an itinerary for 8 days or more.';
+    }
+
+    const prompt = `Based on the following travel preferences, ${destinationPrompt} ${durationInstruction} Recommend a travel destination and itinerary in JSON format. The response should be in Korean. Ensure the JSON is valid and directly parsable. Do not include any markdown or extra text outside the JSON object. The JSON object should have the following structure:
+{
+  "destination": "Recommended destination name in Korean",
+  "description": "A brief description of the destination in Korean",
+  "itinerary": [
+    {
+      "day": "Day N (e.g., Day 1, Day 2)",
+      "activities": [
+        "Activity 1 in Korean",
+        "Activity 2 in Korean"
+      ]
+    }
+    // ... more days based on duration
+  ]
+}
+Travel preferences: ${JSON.stringify(finalSurveyResults)}`;
     
     const result = await model.generateContent(prompt);
     
