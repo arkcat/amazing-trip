@@ -56,7 +56,20 @@ export default function SurveyForm() {
   };
 
   if (loading) {
-    return <div className="text-center text-xl">추천을 생성 중입니다...</div>;
+    return (
+      <div className="text-center flex flex-col items-center justify-center p-10">
+        <div className="relative w-24 h-24 mb-4 animate-spin">
+          <div className="absolute inset-0 border-4 border-dashed border-gray-300 rounded-full"></div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <svg className="w-12 h-12 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+            </svg>
+          </div>
+        </div>
+        <p className="text-xl font-semibold text-gray-700">추천을 생성 중입니다...</p>
+        <p className="text-gray-500">최적의 여행지를 찾고 있어요!</p>
+      </div>
+    );
   }
 
   if (error) {
