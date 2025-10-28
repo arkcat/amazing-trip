@@ -14,14 +14,27 @@ export async function POST(req: NextRequest) {
 
     const genAI = new GoogleGenerativeAI(geminiApiKey);
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-flash",
+      model: "gemini-2.5-pro",
       generationConfig: {
           responseMimeType: "application/json",
           // responseSchema: { ... } (선택 사항)
       }
     });
 
-    const { destination, duration, ...finalSurveyResults } = surveyResults; // Extract duration here
+    const { destination, startDate, endDate, ...finalSurveyResults } = surveyResults;
+
+    const calculateDuration = (start: string, end: string): string => {
+      const startDate = new Date(start);
+      const endDate = new Date(end);
+      const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+      if (diffDays <= 3) return 'short';
+      if (diffDays <= 7) return 'medium';
+      return 'long';
+    };
+
+    const duration = calculateDuration(startDate, endDate);
     const destinationPrompt = destination ? `The user has a preferred destination: ${destination}. Please prioritize this destination if it aligns with other preferences.` : '';
 
     let durationInstruction = '';
