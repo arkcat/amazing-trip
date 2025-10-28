@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import RecommendationDisplay from "@/components/recommendation/RecommendationDisplay";
+import RecommendationDisplay, { Recommendation } from "@/components/recommendation/RecommendationDisplay";
 
 interface Answers {
   destination: string;
@@ -87,7 +87,7 @@ export default function SurveyForm({ destination, startDate, endDate }: SurveyFo
     startDate: startDate || "",
     endDate: endDate || "",
   });
-  const [recommendation, setRecommendation] = useState<any>(null);
+  const [recommendation, setRecommendation] = useState<Recommendation | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const totalSteps = questions.length;
@@ -168,8 +168,12 @@ export default function SurveyForm({ destination, startDate, endDate }: SurveyFo
       const data = await response.json();
       sessionStorage.setItem("recommendation", JSON.stringify(data));
       router.push("/recommendation");
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }
