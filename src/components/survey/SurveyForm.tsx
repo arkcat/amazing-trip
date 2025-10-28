@@ -65,7 +65,7 @@ const questions: {
   },
   {
     id: "priority",
-    text: "5. 여행에서 가장 중요하게 생각하는 것은 무엇인가요? (2개까지 선택 가능)",
+    text: "5. 여행에서 가장 중요하게 생각하는 것은 무엇인가요? (2개 선택)",
     type: "checkbox",
     options: ["음식", "볼거리", "액티비티", "가성비"],
     values: ["food", "sights", "activities", "cost"],
@@ -117,7 +117,7 @@ export default function SurveyForm({ destination, startDate, endDate }: SurveyFo
     } else {
       setAnswers((prev) => ({
         ...prev,
-        [name as keyof Omit<Answers, "priority">]: value,
+        [name]: value,
       }));
     }
   };
@@ -177,7 +177,9 @@ export default function SurveyForm({ destination, startDate, endDate }: SurveyFo
 
   if (loading) {
     return (
-      <div className="text-center flex flex-col items-center justify-center p-10">
+      <div className="flex-grow flex flex-col items-center justify-center">
+        <div className="text-center flex flex-col items-center justify-center p-10">
+
         <div className="relative w-24 h-24 mb-4 animate-spin">
           <div className="absolute inset-0 border-4 border-dashed border-gray-300 rounded-full"></div>
           <div className="absolute inset-0 flex items-center justify-center">
@@ -195,6 +197,7 @@ export default function SurveyForm({ destination, startDate, endDate }: SurveyFo
           추천을 생성 중입니다...
         </p>
         <p className="text-gray-500">최적의 여행지를 찾고 있어요!</p>
+        </div>
       </div>
     );
   }
