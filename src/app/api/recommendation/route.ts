@@ -42,7 +42,8 @@ export async function POST(req: NextRequest) {
       "activities": [
         {
           "time": "HH:MM (e.g., 09:00, 13:00)",
-          "description": "Activity description in Korean"
+          "description": "Activity description in Korean",
+          "link": "A URL for more information, like a Google search link (e.g., https://www.google.com/search?q=...)"
         }
       ]
     }
