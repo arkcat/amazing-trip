@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import RecommendationDisplay, { Recommendation } from "@/components/recommendation/RecommendationDisplay";
 
 interface Answers {
@@ -149,7 +150,21 @@ export default function SurveyForm({ destination, startDate, endDate }: SurveyFo
     e.preventDefault();
     setLoading(true);
     setError(null);
-    setRecommendation(null);
+
+    // Calculate duration
+    let durationString = "";
+    if (answers.startDate && answers.endDate) {
+      const start = new Date(answers.startDate);
+      const end = new Date(answers.endDate);
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+      durationString = `${diffDays}일`;
+    }
+
+    const finalAnswers = {
+      ...answers,
+      duration: durationString,
+    };
 
     try {
       const response = await fetch("/api/recommendation", {
@@ -157,7 +172,7 @@ export default function SurveyForm({ destination, startDate, endDate }: SurveyFo
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(answers),
+        body: JSON.stringify(finalAnswers),
       });
 
       if (!response.ok) {
@@ -179,10 +194,15 @@ export default function SurveyForm({ destination, startDate, endDate }: SurveyFo
     }
   };
 
+  const handleRetry = () => {
+    const syntheticEvent = { preventDefault: () => {} } as React.FormEvent;
+    handleSubmit(syntheticEvent);
+  };
+
   if (loading) {
     return (
-      <div className="flex-grow flex flex-col items-center justify-center">
-        <div className="text-center flex flex-col items-center justify-center p-10">
+      <div className="bg-white/20 backdrop-blur-lg border border-gray-400/50 shadow-lg rounded-2xl p-8 max-w-2xl mx-auto w-full min-h-[500px] flex flex-col items-center justify-center">
+        <div className="text-center flex flex-col items-center justify-center">
 
         <div className="relative w-24 h-24 mb-4 animate-spin">
           <div className="absolute inset-0 border-4 border-dashed border-gray-300 rounded-full"></div>
@@ -200,14 +220,38 @@ export default function SurveyForm({ destination, startDate, endDate }: SurveyFo
         <p className="text-xl font-semibold text-gray-700">
           추천을 생성 중입니다...
         </p>
-        <p className="text-gray-500">최적의 여행지를 찾고 있어요!</p>
+        <p className="text-lg text-gray-600">최적의 여행지를 찾고 있어요!</p>
         </div>
       </div>
     );
   }
 
   if (error) {
-    return <div className="text-center text-red-500 text-xl">오류: {error}</div>;
+    return (
+      <div className="bg-white/20 backdrop-blur-lg border border-red-400/50 shadow-lg rounded-2xl p-8 max-w-2xl mx-auto w-full min-h-[500px] flex flex-col items-center justify-center text-center">
+        <svg className="w-16 h-16 text-red-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <h3 className="text-2xl font-bold text-gray-800 mb-2">오류가 발생했습니다</h3>
+        <p className="text-gray-600 mb-8">
+          추천을 생성하는 중 예상치 못한 문제가 발생했습니다. <br />
+          잠시 후 다시 시도해 주세요.
+        </p>
+        <div className="flex gap-4">
+          <button
+            type="button"
+            onClick={handleRetry}
+            className="bg-gradient-to-r from-purple-500 to-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl hover:scale-105 transform transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50"
+          >
+            재시도
+          </button>
+          <Link
+            href="/"
+            className="bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-lg hover:bg-gray-400 transition-colors duration-300"
+          >
+            처음으로
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   if (recommendation) {
@@ -217,7 +261,7 @@ export default function SurveyForm({ destination, startDate, endDate }: SurveyFo
   const currentQuestion = questions[currentStep];
 
   return (
-    <div className="bg-blue-50 p-8 rounded-2xl shadow-lg max-w-2xl mx-auto w-full">
+    <div className="bg-white/20 backdrop-blur-lg border border-gray-400/50 shadow-lg rounded-2xl p-8 max-w-2xl mx-auto w-full">
       {/* Progress Bar */}
       <div className="mb-8">
         <div className="flex justify-between mb-1">
@@ -234,7 +278,7 @@ export default function SurveyForm({ destination, startDate, endDate }: SurveyFo
       </div>
 
       {/* Question Area */}
-      <div className="p-6 bg-white rounded-lg border border-gray-200 min-h-[200px] flex flex-col justify-center">
+      <div className="p-6 bg-white/30 backdrop-blur-sm rounded-lg border border-white/50 min-h-[200px] flex flex-col justify-center">
         <h3 className="text-xl font-semibold mb-6 text-gray-800">
           {currentQuestion.text}
         </h3>
