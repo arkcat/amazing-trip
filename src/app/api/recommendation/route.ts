@@ -40,8 +40,10 @@ export async function POST(req: NextRequest) {
     {
       "day": "Day N (e.g., Day 1, Day 2)",
       "activities": [
-        "Activity 1 in Korean",
-        "Activity 2 in Korean"
+        {
+          "time": "HH:MM (e.g., 09:00, 13:00)",
+          "description": "Activity description in Korean"
+        }
       ]
     }
     // ... more days based on duration
