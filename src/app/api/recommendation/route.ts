@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { z } from 'zod';
 
 export async function POST(req: NextRequest) {
   try {
@@ -40,8 +41,11 @@ export async function POST(req: NextRequest) {
     {
       "day": "Day N (e.g., Day 1, Day 2)",
       "activities": [
-        "Activity 1 in Korean",
-        "Activity 2 in Korean"
+        {
+          "time": "HH:MM (e.g., 09:00, 13:00)",
+          "description": "Activity description in Korean",
+          "link": "A URL for more information, like a Google search link (e.g., https://www.google.com/search?q=...)"
+        }
       ]
     }
     // ... more days based on duration
